@@ -9,6 +9,8 @@ type Game struct {
 	Buffer        bytes.Buffer
 }
 
+func (g *Game) Render() {}
+
 func NewGame(width, height uint) *Game {
 	return &Game{
 		Width:        width,
