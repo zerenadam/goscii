@@ -21,3 +21,10 @@ func (p *Position) Sub(pos *Position) *Position {
 		Y: p.Y - pos.Y,
 	}
 }
+
+func (p *Position) Set(x, y float64) *Position {
+	return &Position{
+		X: x,
+		Y: y,
+	}
+}
