@@ -16,3 +16,7 @@ func TilemapFromString(mapstr string) [][]rune {
 	}
 	return tilemap
 }
+
+func (s *Scene) AddSprite(sprite *Sprite) {
+	s.Sprites = append(s.Sprites, sprite)
+}
