@@ -1,37 +1,57 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/zerenadam/goscii"
 )
 
 func main() {
-	// Create a new game
-	game := goscii.NewGame(10, 5)
+	game := goscii.NewGame(20, 10)
 
-	// Create a tilemap
-	tilemapStr := `
-..........\n+..........\n+..........\n+..........\n+..........`
-	tilemap := goscii.TilemapFromString(tilemapStr)
+	tilemap := `
+####################
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+#                  #
+####################`
 
-	// Create a scene
-	scene := &goscii.Scene{
-		Name:    "DemoScene",
-		Tilemap: tilemap,
-		Sprites: []*goscii.Sprite{},
-	}
-
-	// Create a sprite
-	sprite := &goscii.Sprite{
-		Rep:  '@',
+	hero := &goscii.Sprite{
+		Rep:  '⚇',
 		Name: "Hero",
-		Pos:  *goscii.NewPosition(2, 2),
+		Pos:  *goscii.NewPosition(1, 1),
 	}
-	scene.Sprites = append(scene.Sprites, sprite)
 
-	// Set current scene
-	game.CurrentScene = scene
-	game.NewScene(scene)
+	spike := &goscii.Sprite{
+		Rep:  '▲',
+		Name: "Spike",
+		Pos:  *goscii.NewPosition(5, 5),
+	}
 
-	// Render the game
-	game.Render()
+	level_1 := &goscii.Scene{
+		Name:    "Level 1",
+		Tilemap: goscii.TilemapFromString(tilemap),
+		Sprites: []*goscii.Sprite{
+			hero,
+			spike,
+		},
+	}
+
+	game.NewScene(level_1)
+	game.CurrentScene = level_1
+
+	for {
+		game.Render()
+		if hero.Pos.X < 10 {
+			hero.Pos.X += 1
+		} else if hero.Pos.X == spike.Pos.X && hero.Pos.Y == spike.Pos.Y {
+			fmt.Println("Game Over!")
+			break
+		}
+	}
 }
