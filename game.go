@@ -13,19 +13,33 @@ type Game struct {
 }
 
 func (g *Game) Render() {
+	if g.CurrentScene == nil {
+		fmt.Println("No scene to render")
+		return
+	}
+
+	g.Buffer.Reset()
+	scene := g.CurrentScene
+
 	for y := 0; y < g.Height; y++ {
 		for x := 0; x < g.Width; x++ {
-			g.CurrentScene.Tilemap[y][x] = ' '
+			tile := scene.Tilemap[y][x]
+			g.Buffer.WriteRune(tile)
+		}
+		g.Buffer.WriteRune('\n')
+	}
+
+	for _, sprite := range scene.Sprites {
+		pos := sprite.Pos
+		if int(pos.Y) < g.Height && int(pos.X) < g.Width {
+			index := int(pos.Y)*g.Width + int(pos.X)
+			bufBytes := g.Buffer.Bytes()
+			bufBytes[index] = byte(sprite.Rep)
+			g.Buffer = *bytes.NewBuffer(bufBytes)
 		}
 	}
-	fmt.Println(g.CurrentScene.Tilemap)
-	for _, sprite := range g.CurrentScene.Sprites {
-		x := int(sprite.Pos.X)
-		y := int(sprite.Pos.Y)
-		if x >= 0 && x < g.Width && y >= 0 && y < g.Height {
-			g.CurrentScene.Tilemap[y][x] = sprite.Rep
-		}
-	}
+
+	fmt.Print(g.Buffer.String())
 }
 
 func NewGame(width, height int) *Game {
